@@ -12,7 +12,6 @@
             'product' => 9,
             'order' => 10,
         ],
-
         'image' => [
             'product' => 'bower_components/bower_project1/user/images/products/',
             'user1' => "bower_components/bower_project1/user/images/person_1.jpg",
@@ -25,6 +24,7 @@
             'errors' => '404',
             'server' => '505',
         ],
+
 
     'number_paginate' => '5',
     'rate' => 5,

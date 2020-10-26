@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Policies\OrderPolicy;
+use Illuminate\Support\Facades\Auth;
 use Mockery\Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -17,13 +19,13 @@ class OrderController extends Controller
      */
     public function index()
     {
-        try {
+        if ($this->user->can('viewAny', Order::class)) {
             $orders = Order::OrderBy('status')->withCount('productDetails')->get();
 
             return view('admin.orders.index', compact('orders'));
-        } catch (Exception $exception) {
-            return redirect()->back()->with('message_error', trans('message_error'));
         }
+
+        return abort(config('setting.error404'));
 
     }
 
@@ -56,11 +58,15 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $order = Order::with(['productDetails', 'user'])->findOrFail($id);
-        $productDetails = $order->productDetails;
-        $user = $order->user;
+        if (Auth::user()->can('view', Order::class)) {
+            $order = Order::with(['productDetails', 'user'])->findOrFail($id);
+            $productDetails = $order->productDetails;
+            $user = $order->user;
 
-        return view('admin.orders.modal_detail_order', compact('order', 'productDetails', 'user'));
+            return view('admin.orders.modal_detail_order', compact('order', 'productDetails', 'user'));
+        }
+
+        return abort(config('setting.error404'));
     }
 
     /**

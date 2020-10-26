@@ -16,17 +16,22 @@
             <li>
                 <a href="#" ><i class="fa fa-table fa-fw"></i> {{ trans('admin.menu.user_management') }}</a>
             </li>
-            <li>
-                <a href=""><i class="fa fa-table fa-fw"></i> {{ trans('admin.menu.product_management') }} <span class="fa arrow"></span></a>
-                <ul class="nav nav-second-level">
-                    <li><a href="{{ route('products.index') }}">{{ trans('admin.menu.product_management.product') }}</a></li>
-                    <li><a href="#">{{ trans('admin.menu.product_management.category') }}</a></li>
-                    <li><a href="{{ route('brands.index') }}">{{ trans('admin.menu.product_management.brand') }}</a></li>
-                </ul>
-            </li>
+            @can('viewAny', App\Models\Product::class)
+                <li>
+                    <a href=""><i class="fa fa-table fa-fw"></i> {{ trans('admin.menu.product_management') }} <span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li><a href="{{ route('products.index') }}">{{ trans('admin.menu.product_management.product') }}</a></li>
+                        <li><a href="#">{{ trans('admin.menu.product_management.category') }}</a></li>
+                        <li><a href="{{ route('brands.index') }}">{{ trans('admin.menu.product_management.brand') }}</a></li>
+                    </ul>
+                </li>
+            @endcan
+
+            @can('viewAny', App\Models\Order::class)
             <li>
                 <a href="{{ route('orders.index') }}"><i class="fa fa-table fa-fw"></i> {{ trans('admin.menu.order_management') }}</a>
             </li>
+            @endcan
             <li>
                 <a href="#"><i class="fa fa-table fa-fw"></i> {{ trans('admin.menu.store_management') }}</a>
             </li>
