@@ -8,6 +8,7 @@ $(document).on("click", ".order", function () {
     $(".loader").show();
     let td = $(this);
     let url = $(this).attr('data-url');
+    console.log(url);
     $.ajax({
         url : url,
         type : "GET",
@@ -79,4 +80,9 @@ $(document).on("click", ".order", function () {
             });
         }
     });
+});
+
+$(document).ready(function () {
+    var audio = new Audio('http://localhost:8000/bower_components/bower_project1/admin/sound/thongbao.mp3 ');
+    audio.play();
 });

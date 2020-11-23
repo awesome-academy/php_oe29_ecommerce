@@ -9,7 +9,6 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ChangeInformationRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\Product;
 use Alert;
 
 class HomeController extends Controller
