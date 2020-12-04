@@ -26,7 +26,7 @@ class CensoredOrderNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'id' => $this->id,
+            'admin_id' => $this->data['admin_id'],
             'order_id' => $this->data['order_id'],
             'title' => $this->data['title'],
             'content' => $this->data['content'],
