@@ -52,4 +52,6 @@
     'load_more' => 5,
     'report_time_order_pending' => '16:00',
     'date' => 'H:i:s d/m/Y',
+    'password_default' => 12345678,
+    'user_image' => 'bower_components/bower_project1/user/images/',
 ];

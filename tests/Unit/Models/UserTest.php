@@ -29,7 +29,7 @@ class UserTest extends TestCase
         parent::tearDown();
         unset($this->user);
     }
-    
+
     public function test_valid_cast_properties()
     {
         $this->assertEquals(['id' => 'int', 'email_verified_at' => 'datetime'], $this->user->getCasts());
@@ -50,6 +50,7 @@ class UserTest extends TestCase
             'password',
             'status',
             'role_id',
+            'avatar',
         ], $this->user->getFillable());
     }
 

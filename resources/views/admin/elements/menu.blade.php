@@ -22,12 +22,14 @@
                     {{ trans('admin.menu.chart') }}
                 </a>
             </li>
+            @if (Auth::user()->role_id == config('role.admin.management'))
             <li>
-                <a href="#" >
+                <a href="{{ route('users.index') }}" >
                     <i class="fa fa-table fa-fw"></i>
                     {{ trans('admin.menu.user_management') }}
                 </a>
             </li>
+            @endif
             @can('viewAny', App\Models\Product::class)
                 <li>
                     <a href=""><i class="fa fa-table fa-fw"></i>

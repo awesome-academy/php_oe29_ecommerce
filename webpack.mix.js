@@ -43,6 +43,7 @@ mix.styles([
     'resources/css/highcharts.css',
     'resources/css/admin_product_detail.css',
     'resources/css/admin_header.css',
+    'resources/css/admin_user.css',
     ], 'public/css/all.css'
 );
 

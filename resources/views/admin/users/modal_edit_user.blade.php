@@ -1,50 +1,50 @@
-<div id="mymodal" class="modal fade" role="dialog">
+<div id="modal-edit" class="modal fade" role="dialog">
     <div class="modal-dialog">
-
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title">{{ trans('admin.product.add_product') }}</h4>
             </div>
             <div class="modal-body">
-                <form action="{{ route('users.store') }}" method="post" enctype="multipart/form-data">
+                <form action="" method="post" enctype="multipart/form-data" class="edit-user">
                     @csrf
+                    @method("PUT")
                     <div class="form-group">
                         <label for="name">{{ trans('admin.user.name') }}</label>
                         @error('name')
                             <span id = "show_errors">&#42; {{ $errors->first('name') }}</span>
                         @enderror
-                        <input type="text" id="name" class="form-control" name="name" value="{{ old('name') }}">
+                        <input type="text" id="edit-name" class="form-control" name="name" value="{{ old('name') }}">
                     </div>
                     <div class="form-group">
                         <label for="name">{{ trans('admin.user.address') }}</label>
                         @error('address')
                             <span id = "show_errors">&#42; {{ $errors->first('address') }}</span>
                         @enderror
-                        <input type="text" id="address" class="form-control" name="address" value="{{ old('address') }}">
+                        <input type="text" id="edit-address" class="form-control" name="address" value="{{ old('address') }}">
                     </div>
                     <div class="form-group">
                         <label for="original_price">{{ trans('admin.user.phone') }}</label>
                         @error('phone')
                             <span id = "show_errors">&#42; {{ $errors->first('phone') }}</span>
                         @enderror
-                        <input type="text" id="original_price" class="form-control" name="phone" value="{{ old('phone') }}">
+                        <input type="text" id="edit-phone" class="form-control" name="phone" value="{{ old('phone') }}">
                     </div>
                     <div class="form-group">
-                        <label for="current_price">{{ trans('admin.user.email') }}</label>
+                        <label for="edit-email">{{ trans('admin.user.email') }}</label>
                         @error('email')
                             <span id = "show_errors">&#42; {{ $errors->first('email') }}</span>
                         @enderror
-                        <input type="text" id="current_price" class="form-control" name="email" value="{{ old('email') }}">
+                        <input type="email" id="edit-email" class="form-control" name="email" value="{{ old('email') }}">
                     </div>
                     <div class="form-group">
                         <label>{{ trans('admin.role') }}</label>
                         @error('role')
                             <span id = "show_errors">&#42; {{ $errors->first('role') }}</span>
                         @enderror
-                        <select multiple="" class="form-control" name="role">
+                        <select multiple="" class="form-control" name="role" id="role">
                             @foreach ($roles as $role)
-                                <option value="{{ $role->id }}">{{ $role->name }}</option>
+                                <option class="role" value="{{ $role->id }}">{{ $role->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -53,11 +53,10 @@
                         @error('image')
                             <span id = "show_errors">&#42; {{ $errors->first('image') }}</span>
                         @enderror
-                        <input type="file" id="browse" class="form-control" name="image">
-                        <div id="preview"></div>
+                        <input type="file" id="edit-browse" class="form-control" name="image">
                     </div>
-                    <input value="create" hidden name="define">
-                    <button class="btn btn-primary" type="submit">{{ trans('admin.user.add_user') }}</button>
+                    <input value="edit" hidden name="define">
+                    <button class="btn btn-primary" type="submit">{{ trans('admin.user.edit') }}</button>
                     <button class = "btn btn-danger" type="reset"> {{ trans('admin.reset') }} </button>
                 </form>
             </div>

@@ -7,7 +7,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <h1 class="page-header">{{ trans('admin.user.name') }}</h1>
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">{{ trans('admin.user.add_user') }}</button>
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#mymodal">{{ trans('admin.user.add_user') }}</button>
                     </div>
                 </div>
                 <div class="row">
@@ -24,6 +24,7 @@
                                             <th>{{ trans('admin.user.address') }}</th>
                                             <th>{{ trans('admin.user.role') }}</th>
                                             <th>{{ trans('admin.user.email') }}</th>
+                                            <th>{{ trans('admin.user.image') }}</th>
                                             <th>{{ trans('admin.action') }}</th>
                                         </tr>
                                         </thead>
@@ -37,11 +38,15 @@
                                                     <td>{{ $user->role->name }}</td>
                                                     <td>{{ $user->email }}</td>
                                                     <td>
+                                                        @if ($user->avatar)
+                                                            <img class="img-circle img-user" src="{{ asset(config('setting.user_image') . $user->avatar) }}">
+                                                        @endif
+                                                    </td>
+                                                    <td>
                                                         <button class="btn btn-primary">{{ trans('admin.detail') }}</button>
-                                                        <button type="button" class="btn btn-info edit-product">
+                                                        <button type="button" class="btn btn-info edit-user" data-url="{{ route('users.show', $user->id) }}">
                                                             {{ trans('admin.edit') }}
                                                         </button>
-                                                        <button class="btn btn-danger" type="submit">{{ trans('admin.delete') }}</button>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -55,7 +60,9 @@
             </div>
         </div>
     </div>
+    <div class="define" data-value ="{{ $errors->first('show_modal') }}" data-url="{{ route('users.update', $errors->first('userId')) }}"></div>
     @include('admin.users.modal_create_user')
+    @include('admin.users.modal_edit_user')
 @endsection
 
 @section('js')
