@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>{{ trans('title', ['name' => 'kawabii']) }}</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="{{ asset('bower_components/bower_project1/user/googleapi.css') }}" rel="stylesheet">
@@ -49,21 +50,19 @@
     <script src="{{ asset('bower_components/bower_project1/sweetalert2.all.js') }}"></script>
     <script src="{{ asset('js/showModal.js') }}"></script>
     <script src="{{ asset('bower_components/pusher-js/dist/web/pusher.min.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
     <script>
         window.translations = {!! $translation !!};
         var lang = JSON.parse(window.translations);
         $(document).ready(function() {
-            var pusher = new Pusher('09c078c2d213dcbbfb3f', {
-                cluster: 'ap1'
-            });
-            var channel = pusher.subscribe('NotificationEvent');
-            channel.bind('send-message', function(notification) {
+
+            Echo.channel('send-message').listen('.notification-order', (event) => {
                 numberNotification = parseInt($('#number-notification').text()) + 1;
                 $('#number-notification').text(numberNotification);
-                var title = lang[notification.title];
-                var content = lang[notification.content];
+                var title = lang[event.title];
+                var content = lang[event.content];
                 var newNotificationHtml = `
-                    <a class="dropdown-item unread" href="read-notification/${notification.id}">
+                    <a class="dropdown-item unread" href="read-notification/${event.id}">
                         <span>${title}</span><br>
                         <small>${content}</small>
                     </a>

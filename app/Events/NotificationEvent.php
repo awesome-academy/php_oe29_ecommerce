@@ -35,4 +35,9 @@ class NotificationEvent implements ShouldBroadcast
     {
         return new Channel('send-message');
     }
+
+    public function broadcastAs()
+    {
+        return ['notification-order'];
+    }
 }

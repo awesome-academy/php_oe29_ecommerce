@@ -15,6 +15,7 @@ use App\Notifications\Admin\CensoredOrderNotification;
 use Pusher\Pusher;
 use App\Models\Notification;
 use App\Jobs\SendMailJob;
+use App\Events\NotificationEvent;
 
 class OrderController extends Controller
 {
@@ -122,23 +123,18 @@ class OrderController extends Controller
                     'content' => 'admin.notification.order_approved.content',
                 ];
                 $user->notify(new CensoredOrderNotification($notification));
-                $options = array(
-                    'cluster' => 'ap1',
-                    'encrypted' => true
-                );
-                $pusher = new Pusher(
-                    env('PUSHER_APP_KEY'),
-                    env('PUSHER_APP_SECRET'),
-                    env('PUSHER_APP_ID'),
-                    $options
-                );
-                $newestNotification = Notification::orderBy('created_at', 'desc')->first();
-                $notifcation = [
+                $newestNotification = Notification::where([
+                        ['type', CensoredOrderNotification::class],
+                        ['notifiable_id', $order->user_id],
+                    ])
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+                $data = [
                     'id' => json_decode($newestNotification->data)->id,
                     'title' => 'admin.notification.order_approved.title',
                     'content' => 'admin.notification.order_approved.content',
                 ];
-                $pusher->trigger('NotificationEvent', 'send-message', $notifcation);
+                event(new NotificationEvent($data));
                 DB::commit();
 
                 return json_encode($data);
@@ -181,23 +177,18 @@ class OrderController extends Controller
                     'content' => 'admin.notification.order_rejected.content',
                 ];
                 $user->notify(new CensoredOrderNotification($notification));
-                $options = array(
-                    'cluster' => 'ap1',
-                    'encrypted' => true
-                );
-                $pusher = new Pusher(
-                    env('PUSHER_APP_KEY'),
-                    env('PUSHER_APP_SECRET'),
-                    env('PUSHER_APP_ID'),
-                    $options
-                );
-                $newestNotification = Notification::orderBy('created_at', 'desc')->first();
-                $notification = [
+                $newestNotification = Notification::where([
+                        ['type', CensoredOrderNotification::class],
+                        ['notifiable_id', $order->user_id],
+                    ])
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+                $data = [
                     'id' => json_decode($newestNotification->data)->id,
                     'title' => 'admin.notification.order_rejected.title',
                     'content' => 'admin.notification.order_rejected.content',
                 ];
-                $pusher->trigger('NotificationEvent', 'send-message', $notification);
+                event(new NotificationEvent($data));
                 DB::commit();
 
                 return json_encode($data);
@@ -223,23 +214,18 @@ class OrderController extends Controller
                     'content' => 'admin.notification.order_rejected.content',
                 ];
                 $user->notify(new CensoredOrderNotification($notification));
-                $options = array(
-                    'cluster' => 'ap1',
-                    'encrypted' => true
-                );
-                $pusher = new Pusher(
-                    env('PUSHER_APP_KEY'),
-                    env('PUSHER_APP_SECRET'),
-                    env('PUSHER_APP_ID'),
-                    $options
-                );
-                $newestNotification = Notification::orderBy('created_at', 'desc')->first();
-                $notification = [
+                $newestNotification = Notification::where([
+                        ['type', CensoredOrderNotification::class],
+                        ['notifiable_id', $order->user_id],
+                    ])
+                    ->orderBy('created_at', 'desc')
+                    ->first();
+                $data = [
                     'id' => json_decode($newestNotification->data)->id,
                     'title' => 'admin.notification.order_rejected.title',
                     'content' => 'admin.notification.order_rejected.content',
                 ];
-                $pusher->trigger('NotificationEvent', 'send-message', $notification);
+                event(new NotificationEvent($data));
                 DB::commit();
 
                 return json_encode($data);
