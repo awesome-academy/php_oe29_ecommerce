@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Repositories\Order\OrderRepositoryInterface;
 use App\Repositories\ProductDetails\ProductDetailRepositoryInterface;
 use App\Repositories\User\UserRepositoryInterface;
+use App\Repositories\Notification\NotificationRepositoryInterface;
 use App\Notifications\Admin\CensoredOrderNotification;
 use Pusher\Pusher;
 use App\Models\Notification;
@@ -21,15 +22,18 @@ class OrderController extends Controller
     protected $userRepo;
     protected $orderRepo;
     protected $productDetailRepo;
+    protected $notificationRepo;
 
     public function __construct(
         UserRepositoryInterface $userRepo,
         OrderRepositoryInterface $orderRepo,
-        ProductDetailRepositoryInterface $productDetailRepo
+        ProductDetailRepositoryInterface $productDetailRepo,
+        NotificationRepositoryInterface $notificationRepo
     ) {
         $this->userRepo = $userRepo;
         $this->orderRepo = $orderRepo;
         $this->productDetailRepo = $productDetailRepo;
+        $this->notificationRepo = $notificationRepo;
     }
 
     /**
@@ -65,7 +69,7 @@ class OrderController extends Controller
 
     public function approvedOrder($id)
     {
-        DB::beginTransaction();
+        // DB::beginTransaction();
         $data = [
             'status' => config('setting.http_status.success'),
             'message' => trans('message_success'),
@@ -116,7 +120,7 @@ class OrderController extends Controller
                 ];
                 $this->dispatch(new SendMailJob($dataToJob));
                 $notification = [
-                    'user_id' => Auth::id(),
+                    'admin_id' => Auth::id(),
                     'order_id' => $order->id,
                     'title' => 'admin.notification.order_approved.title',
                     'content' => 'admin.notification.order_approved.content',
@@ -132,14 +136,14 @@ class OrderController extends Controller
                     env('PUSHER_APP_ID'),
                     $options
                 );
-                $newestNotification = Notification::orderBy('created_at', 'desc')->first();
-                $notifcation = [
-                    'id' => json_decode($newestNotification->data)->id,
+                $newestNotification = $this->notificationRepo->getNotificationApproved();
+                $data = [
+                    'id' => json_decode($newestNotification->data)->admin_id,
                     'title' => 'admin.notification.order_approved.title',
                     'content' => 'admin.notification.order_approved.content',
                 ];
-                $pusher->trigger('NotificationEvent', 'send-message', $notifcation);
-                DB::commit();
+                $pusher->trigger('NotificationEvent', 'send-message', $data);
+                // DB::commit();
 
                 return json_encode($data);
             } else {
@@ -149,7 +153,7 @@ class OrderController extends Controller
                 return  json_encode($data);
             }
         } catch (Exception $exception) {
-            DB::rollBack();
+            // DB::rollBack();
             $data['status'] = config('setting.http_status.error');
             $data['message'] = trans('message_errors');
 
@@ -175,7 +179,7 @@ class OrderController extends Controller
                 $data['rejected'] = trans('admin.rejected');
                 $user = $this->userRepo->find($order->user_id);
                 $notification = [
-                    'user_id' => Auth::id(),
+                    'admin_id' => Auth::id(),
                     'order_id' => $order->id,
                     'title' => 'admin.notification.order_rejected.title',
                     'content' => 'admin.notification.order_rejected.content',
@@ -191,9 +195,9 @@ class OrderController extends Controller
                     env('PUSHER_APP_ID'),
                     $options
                 );
-                $newestNotification = Notification::orderBy('created_at', 'desc')->first();
-                $notification = [
-                    'id' => json_decode($newestNotification->data)->id,
+                $newestNotification = Notification::where('type', 'App\Notifications\Admin\CensoredOrderNotification')->orderBy('created_at', 'desc')->first();
+                $data = [
+                    'id' => json_decode($newestNotification->data)->admin_id,
                     'title' => 'admin.notification.order_rejected.title',
                     'content' => 'admin.notification.order_rejected.content',
                 ];
@@ -217,7 +221,7 @@ class OrderController extends Controller
                 $data['rejected'] = trans('admin.rejected');
                 $user = $this->userRepo->find($order->user_id);
                 $notification = [
-                    'user_id' => Auth::id(),
+                    'admin_id' => Auth::id(),
                     'order_id' => $order->id,
                     'title' => 'admin.notification.order_rejected.title',
                     'content' => 'admin.notification.order_rejected.content',
@@ -233,9 +237,9 @@ class OrderController extends Controller
                     env('PUSHER_APP_ID'),
                     $options
                 );
-                $newestNotification = Notification::orderBy('created_at', 'desc')->first();
-                $notification = [
-                    'id' => json_decode($newestNotification->data)->id,
+                $newestNotification = Notification::where('type', 'App\Notifications\Admin\CensoredOrderNotification')->orderBy('created_at', 'desc')->first();
+                $data = [
+                    'id' => json_decode($newestNotification->data)->admin_id,
                     'title' => 'admin.notification.order_rejected.title',
                     'content' => 'admin.notification.order_rejected.content',
                 ];
